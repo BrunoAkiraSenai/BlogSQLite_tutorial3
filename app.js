@@ -9,6 +9,8 @@ const app = express(); //Instância para o uso do Express
 // Cria conexão com o banco de dados
 const db = new sqlite3.Database("user.db"); //Instâcia para uso do Sqlite3, e usa o arquivo 'user.db'
 
+let config = { titulo: "", rodape: "" };
+
 db.serialize(() => {
   // Este metodo permite enviar comandos SQL em modo 'sequencial'
   db.run(
@@ -46,16 +48,18 @@ app.get("/", (req, res) => {
     titulo: "Blog da turma I2HNA - SESI Nova Odessa",
   });
   // res.redirect("/cadastro"); // Redireciona para a ROTA cadastro
+  config = { titulo: "Blog da turma I2HNA - Sesi Nova Odessa", rodape: "" };
+  res.render("pages/index", config);
 });
 
 app.get("/sobre", (req, res) => {
   console.log("GET /sobre");
-  res.render("pages/sobre");
+  res.render("pages/sobre", config);
 });
 
 app.get("/login", (req, res) => {
   console.log("GET /login");
-  res.render("pages/login");
+  res.render("pages/login", config);
 });
 
 app.post("/login", (req, res) => {
@@ -65,12 +69,12 @@ app.post("/login", (req, res) => {
 
 app.get("/dashboard", (req, res) => {
   console.log("GET /dashboard");
-  res.render("pages/dashboard");
+  res.render("pages/dashboard", config);
 });
 
 app.get("/cadastro", (req, res) => {
   console.log("GET /cadastro");
-  res.render("pages/cadastro");
+  res.render("pages/cadastro", config);
 });
 
 app.get("/usuarios", (req, res) => {
