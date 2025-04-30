@@ -4,24 +4,24 @@
    
   </tbody>
 </table> -->
-<thead>
-  <tr>
-    <th scope="col">ID</th>
-    <th scope="col">Nome</th>
-    <th scope="col">Email</th>
-    <th scope="col">Celular</th>
-  </tr>
-</thead>
-
-<% for(let i = 0; i < 8; i++) {%> <% console.log(i) %>
 <table>
-  <thead>
+  <tbody>
+    <thead>
+      <tr>
+        <th scope="col">ID</th>
+        <th scope="col">Nome</th>
+        <th scope="col">Email</th>
+        <th scope="col">Celular</th>
+      </tr>
+    </thead>
+
+    <% for(let i = 0; i < 8; i++) {%> <% if(i == i) {%>
     <tr>
       <td><%= i %></td>
       <td>NOME</td>
       <td>EMAIL</td>
       <td>CELULAR</td>
     </tr>
-  </thead>
+    <% } %> <% } %>
+  </tbody>
 </table>
-<%}%>

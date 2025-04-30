@@ -1,6 +1,7 @@
 const express = require("express"); //importou a classe
 const sqlite3 = require("sqlite3");
 const bodyParser = require("body-parser"); //importa o body-parser
+const session = require("express-session");
 
 const port = 8000; // porta TCP do servidor HTTP da aplicação
 
@@ -17,6 +18,14 @@ db.serialize(() => {
     `CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, password TEXT, email TEXT, celular TEXT, cpf TEXT, rg TEXT)`
   );
 });
+
+app.use(
+  session({
+    secret: "qualquersenha",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
 
 // __dirname é a variavel interna do nodejs que guarda o caminho absolute do projeto, no SO
 // console.log(__dirname + "/static");
@@ -44,9 +53,9 @@ const cadastro = 'vc está na página "Cadastro"<br><a href="/">Voltar</a>';
 app.get("/", (req, res) => {
   // res.send(Home);
   console.log("GET /index");
-  res.render("pages/index", {
-    titulo: "Blog da turma I2HNA - SESI Nova Odessa",
-  });
+  // res.render("pages/index", {
+  //   titulo: "Blog da turma I2HNA - SESI Nova Odessa",
+  // });
   // res.redirect("/cadastro"); // Redireciona para a ROTA cadastro
   config = { titulo: "Blog da turma I2HNA - Sesi Nova Odessa", rodape: "" };
   res.render("pages/index", config);
@@ -64,7 +73,24 @@ app.get("/login", (req, res) => {
 
 app.post("/login", (req, res) => {
   console.log("POST /login");
-  res.send("Login ainda não implementado");
+  const { username, password } = req.body;
+
+  //consultar p usuario no banco de dados
+  const query = "SELECT * FROM users WHERE username = ? AND password = ?";
+
+  //usuario valido vai registrar a sessão e deixando ele logar e redireciona para o dashboard
+  db.get(query, [username, password], (err, row) => {
+    if (err) throw err;
+
+    if (row) {
+      req.session.logged = true;
+      req.session.username = username;
+      res.redirect("/dashboard");
+    } //se nao envia a mensagem de erro("usuario nao encontrado")
+    else {
+      res.send("Useario nao encontrado");
+    }
+  });
 });
 
 app.get("/dashboard", (req, res) => {
