@@ -1,27 +1,40 @@
 <!-- <table>
   
   <tbody>
+
+
+
+
    
   </tbody>
 </table> -->
 <table>
   <tbody>
-    <thead>
+    <thead class="usertable">
       <tr>
         <th scope="col">ID</th>
         <th scope="col">Nome</th>
         <th scope="col">Email</th>
+        <th scope="col">Senha</th>
         <th scope="col">Celular</th>
+        <!-- <th scope="col">Celular</th> -->
       </tr>
     </thead>
 
-    <% for(let i = 0; i < 8; i++) {%> <% if(i == i) {%>
-    <tr>
-      <td><%= i %></td>
-      <td>NOME</td>
-      <td>EMAIL</td>
-      <td>CELULAR</td>
+    <% for (let i = 0; i < row.length; i++) { %> <% if (row[i].username ==
+    req.session.username) { %>
+    <tr class="bg-primary">
+      <% } else { %>
     </tr>
-    <% } %> <% } %>
+    <tr>
+      <% } %>
+
+      <th><%= row[i].id %></th>
+      <td><%= row[i].username %></td>
+      <td><%= row[i].email %></td>
+      <td><%= row[i].password %></td>
+      <td><%= row[i].celular %></td>
+    </tr>
+    <% } %>
   </tbody>
 </table>
