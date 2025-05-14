@@ -3,7 +3,7 @@ const sqlite3 = require("sqlite3");
 const bodyParser = require("body-parser"); //importa o body-parser
 const session = require("express-session");
 
-const port = 8000; // porta TCP do servidor HTTP da aplicação
+const port = 9000; // porta TCP do servidor HTTP da aplicação
 
 const app = express(); //Instância para o uso do Express
 
@@ -86,30 +86,42 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-  console.log("POST /login");
   const { username, password } = req.body;
 
-  //consultar p usuario no banco de dados
   const query = "SELECT * FROM users WHERE username = ? AND password = ?";
 
-  //usuario valido vai registrar a sessão e deixando ele logar e redireciona para o dashboard
   db.get(query, [username, password], (err, row) => {
     if (err) throw err;
 
     if (row) {
-      req.session.logged = true;
-      req.session.username = username;
+      // Utilize req.session às variáveis de sessão para controlar a lógica de sua página em função da sessão, como
+      // por exemplo se o usuário está autenticado (logado).
+      req.session.loggedin = true;
+      req.session.username = username; // Crie variáveis de controle adicionais caso haja ncessidade
+      // req.session.dataLogin = new Date() // Exemplo de criação de variável de sessão para controlar o tempo de login.
       res.redirect("/dashboard");
-    } //se nao envia a mensagem de erro("usuario nao encontrado")
-    else {
-      res.send("Useario nao encontrado");
+    } else {
+      res.render("/login_failed", { ...config, req: req });
     }
   });
 });
 
 app.get("/dashboard", (req, res) => {
   console.log("GET /dashboard");
-  res.render("pages/dashboard", { ...config, req: req });
+
+  if (req.session.loggedin) {
+    const query = "SELECT * FROM users";
+
+    db.all(query, (err, rows) => {
+      if (err) throw err;
+      //if (row) {
+      console.log(rows);
+      res.render("pages/dashboard", { ...config, row: rows, req: req });
+      //}
+    });
+  } else {
+    res.render("pages/login_failed", { ...config, req: req });
+  }
 });
 
 app.get("/cadastro", (req, res) => {
@@ -139,7 +151,7 @@ app.get("/dashboard", (req, res) => {
       //}
     });
   } else {
-    res.redirect("/login_failed");
+    res.render("/login_failed");
   }
 });
 
@@ -186,6 +198,12 @@ app.post("/cadastro", (req, res) => {
     }
   });
 });
+
+app.use("*", (req, res) => {
+  // Envia uma resposta de erro 404
+  res.status(404).render("pages/404", { ...config, req: req });
+});
+
 //app.listen() deve ser o último comando da aplicação (app.js)
 app.listen(port, () => {
   console.log(`Servidor sendo executado na porta ${port}!`);
