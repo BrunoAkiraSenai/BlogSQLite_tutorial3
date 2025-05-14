@@ -109,12 +109,12 @@ app.post("/login", (req, res) => {
 
 app.get("/dashboard", (req, res) => {
   console.log("GET /dashboard");
-  res.render("pages/dashboard", config);
+  res.render("pages/dashboard", { ...config, req: req });
 });
 
 app.get("/cadastro", (req, res) => {
   console.log("GET /cadastro");
-  res.render("pages/cadastro", config);
+  res.render("pages/cadastro", { ...config, req: req });
 });
 
 app.get("/usuarios", (req, res) => {
@@ -135,7 +135,7 @@ app.get("/dashboard", (req, res) => {
       if (err) throw err;
       //if (row) {
       console.log(rows);
-      res.render("pages/dashboard", { row: rows, req: req });
+      res.render("pages/dashboard", { ...config, req: req });
       //}
     });
   } else {
