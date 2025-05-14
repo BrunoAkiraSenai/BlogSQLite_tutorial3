@@ -41,6 +41,20 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Configurar EJS como o motor de visualização
 app.set("view engine", "ejs");
 
+app.get("/", (req, res) => {
+  // Passe a variável 'req' para o template e use-a nas páginas para renderizar partes do HTML conforme determinada condição
+  // Por exemplo de o usuário estive logado, veja este exemplo no arquivo views/partials/header.ejs
+  res.render("pages/index", { ...config, req: req });
+  // Caso haja necessidade coloque pontos de verificação para verificar pontos da sua logica de negócios
+  console.log(
+    `${
+      req.session.username
+        ? `User ${req.session.username} logged in from IP ${req.connection.remoteAddress}`
+        : "User not logged in."
+    }  `
+  );
+});
+
 const Home =
   "<a href='/sobre'> Sobre </a><a href='/Login'> Login </a><a href='/cadastro'> Cadastro </a>";
 const Sobre = 'vc está na página "Sobre"<br><a href="/">Voltar</a>';
@@ -58,17 +72,17 @@ app.get("/", (req, res) => {
   // });
   // res.redirect("/cadastro"); // Redireciona para a ROTA cadastro
   config = { titulo: "Blog da turma I2HNA - Sesi Nova Odessa", rodape: "" };
-  res.render("pages/index", config);
+  res.render("pages/index", { ...config, req: req });
 });
 
 app.get("/sobre", (req, res) => {
   console.log("GET /sobre");
-  res.render("pages/sobre", config);
+  res.render("pages/sobre", { ...config, req: req });
 });
 
 app.get("/login", (req, res) => {
   console.log("GET /login");
-  res.render("pages/login", config);
+  res.render("pages/login", { ...config, req: req });
 });
 
 app.post("/login", (req, res) => {
@@ -108,6 +122,31 @@ app.get("/usuarios", (req, res) => {
   db.all(query, (err, row) => {
     console.log(`GET /usuarios ${JSON.stringify(row)}`);
     res.render("pages/usertable");
+  });
+});
+
+app.get("/dashboard", (req, res) => {
+  // Exemplo de uma rota (END POINT) controlado pela sessão do usuário logado.
+
+  if (req.session.loggedin) {
+    const query = "SELECT * FROM users";
+
+    db.all(query, (err, rows) => {
+      if (err) throw err;
+      //if (row) {
+      console.log(rows);
+      res.render("pages/dashboard", { row: rows, req: req });
+      //}
+    });
+  } else {
+    res.redirect("/login_failed");
+  }
+});
+
+app.get("/logout", (req, res) => {
+  // Exemplo de uma rota (END POINT) controlado pela sessão do usuário logado.
+  req.session.destroy(() => {
+    res.redirect("/login");
   });
 });
 
