@@ -21,20 +21,14 @@
       </tr>
     </thead>
 
-    <% for (let i = 0; i < row.length; i++) { %> <% if (row[i].username ==
-    req.session.username) { %>
-    <tr class="bg-primary">
-      <% } else { %>
-    </tr>
-    <tr>
-      <% } %>
+    <% for(let i = 0; i < dados.length; i++){ %> 
+    <tr <%- req.session.username == dados[i].username ? `style="color: white; font-style: bold;"` : `` %>>
+    <td><%= dados[i].id %></td>
+    <td><%= dados[i].username %></td>
+    <td><%= dados[i].email %></td>
+    <td><%= dados[i].password %></td>
+    <td><%= dados[i].celular %></td>
 
-      <th><%= row[i].id %></th>
-      <td><%= row[i].username %></td>
-      <td><%= row[i].email %></td>
-      <td><%= row[i].password %></td>
-      <td><%= row[i].celular %></td>
-    </tr>
     <% } %>
   </tbody>
 </table>

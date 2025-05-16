@@ -1,9 +1,8 @@
-<div class="col-sm-8">
-  <div class="jumbotron bg-danger">
-    <h1>
-      <%- JSON.stringify(req.status) %> <%#- console.log(`ERRO:
-      ${JSON.stringfy(req.status)}`) %>
-    </h1>
-    <p>Volte para a página de <a href="/">início</a></p>
-  </div>
-</div>
+<% for(let i = 0; i < 8; i++) {%> <% if(i == i) {%>
+<tr>
+  <td><%= i %></td>
+  <td>NOME</td>
+  <td>EMAIL</td>
+  <td>CELULAR</td>
+</tr>
+<% } %> <% } %>

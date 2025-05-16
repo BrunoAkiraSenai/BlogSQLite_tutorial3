@@ -106,23 +106,23 @@ app.post("/login", (req, res) => {
   });
 });
 
-app.get("/dashboard", (req, res) => {
-  console.log("GET /dashboard");
+// app.get("/dashboard", (req, res) => {
+//   console.log("GET /dashboard");
 
-  if (req.session.loggedin) {
-    const query = "SELECT * FROM users";
+//   if (req.session.loggedin) {
+//     const query = "SELECT * FROM users";
 
-    db.all(query, (err, rows) => {
-      if (err) throw err;
-      //if (row) {
-      console.log(rows);
-      res.render("pages/dashboard", { ...config, row: rows, req: req });
-      //}
-    });
-  } else {
-    res.render("pages/login_failed", { ...config, req: req });
-  }
-});
+//     db.all(query, (err, rows) => {
+//       if (err) throw err;
+//       //if (row) {
+//       console.log(rows);
+//       res.render("pages/dashboard", { ...config, row: rows, req: req });
+//       //}
+//     });
+//   } else {
+//     res.render("pages/login_failed", { ...config, req: req });
+//   }
+// });
 
 app.get("/cadastro", (req, res) => {
   console.log("GET /cadastro");
@@ -138,20 +138,21 @@ app.get("/usuarios", (req, res) => {
 });
 
 app.get("/dashboard", (req, res) => {
-  // Exemplo de uma rota (END POINT) controlado pela sessão do usuário logado.
+  console.log ("GET /dashboard");
+  console.log (JSON.stringify(config));
 
   if (req.session.loggedin) {
-    const query = "SELECT * FROM users";
-
-    db.all(query, (err, rows) => {
+    db.all("SELECT * FROM users", [], (err, row) => {
       if (err) throw err;
-      //if (row) {
-      console.log(rows);
-      res.render("pages/dashboard", { ...config, req: req });
-      //}
+      res.render("pages/dashboard", {
+        titulo: "DASHBOARD",
+        dados: row,
+        req: req,      
+      });
     });
   } else {
-    res.render("/login_failed");
+    console.log("Tentativa de acess à área restrita");
+    res.redirect("/");
   }
 });
 
