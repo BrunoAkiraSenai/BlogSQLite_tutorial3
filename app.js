@@ -2,6 +2,7 @@ const express = require("express"); //importou a classe
 const sqlite3 = require("sqlite3");
 const bodyParser = require("body-parser"); //importa o body-parser
 const session = require("express-session");
+const { error } = require("console");
 
 const port = 9000; // porta TCP do servidor HTTP da aplicação
 
@@ -165,12 +166,16 @@ app.get("/logout", (req, res) => {
 });
 
 app.get("/invalido", (req,res) =>{
-  res.render("pages/invalido", { ...config, req: req });
+  res.render("pages/error", { ...config, req: req, error: "usuario ja cadastrado,refaça" });
 })
 
 app.get("/valido", (req,res) =>{
-  res.render("pages/valido", { ...config, req: req });
+
+  res.render("pages/error", { ...config, req: req, error: "usuario cadastrado com sucesso" });
 })
+
+
+
 
 
 app.post("/cadastro", (req, res) => {
